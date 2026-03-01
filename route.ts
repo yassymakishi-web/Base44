@@ -6,7 +6,9 @@ const SPREADSHEET_ID = '1vLe8YPqcsQ8vZojfDfEXujzSu9qAJKH9NJyPUOZpi1M';
 const SERVICE_ACCOUNT_KEY = {
   project_id: "soy-transducer-488407-b4",
   client_email: "base44@soy-transducer-488407-b4.iam.gserviceaccount.com",
-  private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\\\n/g, '\n'),
+  private_key: process.env.GOOGLE_PRIVATE_KEY
+    ? process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n').replace(/\n/g, '\n').replace(/"/g, '').trim()
+    : undefined,
 };
 
 async function getSheetsClient() {
@@ -29,25 +31,24 @@ export async function GET() {
 
     const items = rows.slice(1).map((row: any, index: number) => {
       const parsePrice = (val: any) => {
-        if (val === undefined || val === null || val === "") return null;
-        const n = parseInt(String(val).replace(/[^-0-9.]/g, ''));
-        return isNaN(n) ? null : n;
+        const n = Number(String(val || "").replace(/[^-0-9.]/g, ''));
+        return isNaN(n) ? 0 : n;
       };
       return {
         rowNumber: index + 2,
-        description: row[1] || "",
-        name: row[2] || "無題",
-        priceDefault: parsePrice(row[3]) || 0,
-        type: row[5] || "その他",
-        category: row[6] || "未分類",
-        isDrinkOption: String(row[7]) === "1",
-        image: row[8] || "",
-        planLimit: String(row[9] || "").trim().toUpperCase(), // J列
-        priceL: parsePrice(row[10]),
-        priceS: parsePrice(row[11]),
-        priceP: parsePrice(row[12]),
-        priceGlass: parsePrice(row[13]),
-        priceBottle: parsePrice(row[14]),
+        description: row[1] || "",           // B列
+        name: row[2] || "無題",              // C列
+        priceDefault: parsePrice(row[3]),    // D列
+        type: row[5] || "その他",            // F列
+        category: row[6] || "未分類",        // G列
+        optionType: String(row[7] || "0").trim(), // H列
+        image: row[8] || "",                 // I列
+        planLimit: row[9] || "",             // J列
+        priceS: parsePrice(row[10]),         // K列
+        priceL: parsePrice(row[11]),         // L列
+        priceP: parsePrice(row[12]),         // M列
+        isSoldOut: row[13] === "TRUE",       // N列
+        extraPrice: parsePrice(row[14])      // O列
       };
     }).filter(i => i.name !== "無題");
 
@@ -67,11 +68,12 @@ export async function POST(request: Request) {
       item.name,
       item.quantity,
       item.price,
-      body.orderType
+      body.orderType,
+      item.price * item.quantity
     ]);
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: 'Sheet2!A:F',
+      range: 'Orders!A1',
       valueInputOption: 'USER_ENTERED',
       requestBody: { values },
     });
