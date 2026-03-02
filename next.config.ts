@@ -1,13 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // 1. ビルド時の型エラー（TypeScript Error）を無視する
   typescript: {
-    // ビルド時の型エラーを無視して強行する
     ignoreBuildErrors: true,
   },
+  // 2. ビルド時のコード書き方チェック（ESLint）を無視する
   eslint: {
-    // ビルド時のESLintチェック（書き方チェック）を無視する
     ignoreDuringBuilds: true,
   },
 };
