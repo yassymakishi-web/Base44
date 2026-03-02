@@ -1,27 +1,27 @@
 {
   "name": "base44",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "next dev",
+    "start": "next start"
   },
   "dependencies": {
-    "framer-motion": "^11.0.0",
-    "googleapis": "^126.0.0",
-    "next": "15.1.7",
+    "next": "16.0.0-canary.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "lucide-react": "^0.300.0"
+    "framer-motion": "latest",
+    "lucide-react": "latest",
+    "googleapis": "latest"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/react": "19.0.0",
-    "@types/react-dom": "19.0.0",
-    "typescript": "^5.0.0",
-    "@tailwindcss/postcss": "^4.0.0",
-    "tailwindcss": "^4.0.0"
+    "typescript": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "postcss": "latest",
+    "tailwindcss": "latest",
+    "@tailwindcss/postcss": "latest"
   }
 }
